@@ -147,48 +147,44 @@
     // test if a specific major diagonal on this board contains a conflict
     hasMajorDiagonalConflictAt: function(majorDiagonalColumnIndexAtFirstRow) {
     //call board
-      var boardRows = this.rows();
-
-      //check dimensions of board (board.rows().length)
-      // this.get('n');
-      var dimensions = this.get('n');
+      //check dimensions of board
       // declare counter
-      var counter = 0;
       // declare x and y coordinates
-      var currentRow = 0;
-      var currentCol = majorDiagonalColumnIndexAtFirstRow;
-
-      // iterate through diagonal squares
-      while (currentRow === dimensions || currentCol === dimensions) {
+      // iterate parameter to reach first (x, 0) or (0, x) coord
+      //x is positive in case of negative parameter
+      //if square at that index is 1, counter++
+      //return true if counter > 1
+      var boardRows = this.rows();
+      var dimensions = this.get('n');
+      var counter = 0;
+      for (var i = 0; i < (dimensions * 2) - 2; i++) {
+        var currentRow = i;
+        var currentCol = i + majorDiagonalColumnIndexAtFirstRow;
         if (currentCol < 0) {
-          currentRow++;
-          currentCol++;
           continue;
         }
-
+        if (currentCol > (dimensions - 1) || currentRow > (dimensions - 1)) {
+          break;
+        }
         if (boardRows[currentRow][currentCol] === 1) {
           counter++;
         }
-        currentRow++;
-        currentCol++;
       }
-
       return counter > 1 ? true : false;
-
-    // iterate parameter to reach first (x, 0) or (0, x) coord
-      //x is positive in case of negative parameter
-      //if square at that index is 1, counter++
-    //return true if counter > 1
     },
 
     // test if any major diagonals on this board contain conflicts
     hasAnyMajorDiagonalConflicts: function() {
       //can skip last diagonal (major)
       //generate array of queen positions
-      var boardLength = this.get('n');
+      var dimensions = this.get('n');
+      var boardRows = this.rows();
 
-
-
+      for (var i = 2 - dimensions; i < dimensions - 2; i++) {
+        if (this.hasMajorDiagonalConflictAt(i)) {
+          return true;
+        }
+      }
       return false; // fixme
     },
 
@@ -199,12 +195,39 @@
     //
     // test if a specific minor diagonal on this board contains a conflict
     hasMinorDiagonalConflictAt: function(minorDiagonalColumnIndexAtFirstRow) {
-      return false; // fixme
+      var boardRows = this.rows();
+      var dimensions = this.get('n');
+      var counter = 0;
+
+      for (var i = 0; i < (dimensions * 2) - 2; i++) {
+        var currentRow = i;
+        var currentCol = minorDiagonalColumnIndexAtFirstRow - i;
+
+        if (currentRow > (dimensions - 1) || currentCol < 0) {
+          break;
+        }
+
+        if (currentCol > (dimensions - 1)) {
+          continue;
+        }
+
+        if (boardRows[currentRow][currentCol] === 1) {
+          counter++;
+        }
+      }
+      return counter > 1 ? true : false;
     },
 
     // test if any minor diagonals on this board contain conflicts
     hasAnyMinorDiagonalConflicts: function() {
       //can ignore first index (minor)
+      var dimensions = this.get('n');
+      for (var i = 1; i < ((dimensions * 2) - 1); i++) {
+        // if (true) {
+        if (this.hasMinorDiagonalConflictAt(i)) {
+          return true;
+        }
+      }
       return false; // fixme
     }
 
