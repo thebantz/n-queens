@@ -62,7 +62,7 @@
     },
 
 
-/*
+    /*
          _             _     _
      ___| |_ __ _ _ __| |_  | |__   ___ _ __ ___ _
     / __| __/ _` | '__| __| | '_ \ / _ \ '__/ _ (_)
@@ -79,11 +79,31 @@
     //
     // test if a specific row on this board contains a conflict
     hasRowConflictAt: function(rowIndex) {
-      return false; // fixme
+      var boardRows = this.rows();
+      var oneRow = boardRows[rowIndex];
+
+      var counter = 0;
+      for (var square of oneRow) {
+        if (square === 1) {
+          counter++;
+        }
+      }
+
+      return counter > 1 ? true : false;
+
     },
 
     // test if any rows on this board contain conflicts
     hasAnyRowConflicts: function() {
+      var board = this;
+      var boardRows = this.rows();
+
+      for (var i = 0; i < boardRows.length; i++) {
+        if (this.hasRowConflictAt(i)) {
+          return true;
+        }
+      }
+
       return false; // fixme
     },
 
@@ -94,11 +114,28 @@
     //
     // test if a specific column on this board contains a conflict
     hasColConflictAt: function(colIndex) {
-      return false; // fixme
+      var boardRows = this.rows();
+
+      var counter = 0;
+      for (var i = 0; i < boardRows.length; i++) {
+        if (boardRows[i][colIndex] === 1) {
+          counter++;
+        }
+      }
+
+      return counter > 1 ? true : false;
     },
 
     // test if any columns on this board contain conflicts
     hasAnyColConflicts: function() {
+      //var boardRows = this.rows();
+      var boardLength = this.get('n');
+      for (var i = 0; i < boardLength; i++) {
+        if (this.hasColConflictAt(i)) {
+          return true;
+        }
+      }
+
       return false; // fixme
     },
 
@@ -109,11 +146,49 @@
     //
     // test if a specific major diagonal on this board contains a conflict
     hasMajorDiagonalConflictAt: function(majorDiagonalColumnIndexAtFirstRow) {
-      return false; // fixme
+    //call board
+      var boardRows = this.rows();
+
+      //check dimensions of board (board.rows().length)
+      // this.get('n');
+      var dimensions = this.get('n');
+      // declare counter
+      var counter = 0;
+      // declare x and y coordinates
+      var currentRow = 0;
+      var currentCol = majorDiagonalColumnIndexAtFirstRow;
+
+      // iterate through diagonal squares
+      while (currentRow === dimensions || currentCol === dimensions) {
+        if (currentCol < 0) {
+          currentRow++;
+          currentCol++;
+          continue;
+        }
+
+        if (boardRows[currentRow][currentCol] === 1) {
+          counter++;
+        }
+        currentRow++;
+        currentCol++;
+      }
+
+      return counter > 1 ? true : false;
+
+    // iterate parameter to reach first (x, 0) or (0, x) coord
+      //x is positive in case of negative parameter
+      //if square at that index is 1, counter++
+    //return true if counter > 1
     },
 
     // test if any major diagonals on this board contain conflicts
     hasAnyMajorDiagonalConflicts: function() {
+      //can skip last diagonal (major)
+      //generate array of queen positions
+      var boardLength = this.get('n');
+
+
+
       return false; // fixme
     },
 
@@ -129,6 +204,7 @@
 
     // test if any minor diagonals on this board contain conflicts
     hasAnyMinorDiagonalConflicts: function() {
+      //can ignore first index (minor)
       return false; // fixme
     }
 
